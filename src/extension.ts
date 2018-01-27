@@ -1,6 +1,175 @@
 import * as vscode from 'vscode'
 import * as https from 'https'
 
+//Currencies with symbols
+const currencyMap = {
+    'AED': 'د.إ',
+    'AFN': '؋',
+    'ALL': 'L',
+    'ANG': 'ƒ',
+    'AOA': 'Kz',
+    'ARS': '$',
+    'AUD': '$',
+    'AWG': 'ƒ',
+    'AZN': '₼',
+    'BAM': 'KM',
+    'BBD': '$',
+    'BDT': '৳',
+    'BGN': 'лв',
+    'BHD': '.د.ب',
+    'BIF': 'FBu',
+    'BMD': '$',
+    'BND': '$',
+    'BOB': 'Bs.',
+    'BRL': 'R$',
+    'BSD': '$',
+    'BTC': '฿',
+    'BTN': 'Nu.',
+    'BWP': 'P',
+    'BYR': 'p.',
+    'BZD': 'BZ$',
+    'CAD': '$',
+    'CDF': 'FC',
+    'CHF': 'Fr.',
+    'CLP': '$',
+    'CNY': '¥',
+    'COP': '$',
+    'CRC': '₡',
+    'CUC': '$',
+    'CUP': '₱',
+    'CVE': '$',
+    'CZK': 'Kč',
+    'DJF': 'Fdj',
+    'DKK': 'kr',
+    'DOP': 'RD$',
+    'DZD': 'دج',
+    'EEK': 'kr',
+    'EGP': '£',
+    'ERN': 'Nfk',
+    'ETB': 'Br',
+    'ETH': 'Ξ',
+    'EUR': '€',
+    'FJD': '$',
+    'FKP': '£',
+    'GBP': '£',
+    'GEL': '₾',
+    'GGP': '£',
+    'GHC': '₵',
+    'GHS': 'GH₵',
+    'GIP': '£',
+    'GMD': 'D',
+    'GNF': 'FG',
+    'GTQ': 'Q',
+    'GYD': '$',
+    'HKD': '$',
+    'HNL': 'L',
+    'HRK': 'kn',
+    'HTG': 'G',
+    'HUF': 'Ft',
+    'IDR': 'Rp',
+    'ILS': '₪',
+    'IMP': '£',
+    'INR': '₹',
+    'IQD': 'ع.د',
+    'IRR': '﷼',
+    'ISK': 'kr',
+    'JEP': '£',
+    'JMD': 'J$',
+    'JPY': '¥',
+    'KES': 'KSh',
+    'KGS': 'лв',
+    'KHR': '៛',
+    'KMF': 'CF',
+    'KPW': '₩',
+    'KRW': '₩',
+    'KYD': '$',
+    'KZT': '₸',
+    'LAK': '₭',
+    'LBP': '£',
+    'LKR': '₨',
+    'LRD': '$',
+    'LSL': 'M',
+    'LTC': 'Ł',
+    'LTL': 'Lt',
+    'LVL': 'Ls',
+    'MAD': 'MAD',
+    'MDL': 'lei',
+    'MGA': 'Ar',
+    'MKD': 'ден',
+    'MMK': 'K',
+    'MNT': '₮',
+    'MOP': 'MOP$',
+    'MUR': '₨',
+    'MVR': 'Rf',
+    'MWK': 'MK',
+    'MXN': '$',
+    'MYR': 'RM',
+    'MZN': 'MT',
+    'NAD': '$',
+    'NGN': '₦',
+    'NIO': 'C$',
+    'NOK': 'kr',
+    'NPR': '₨',
+    'NZD': '$',
+    'OMR': '﷼',
+    'PAB': 'B/.',
+    'PEN': 'S/.',
+    'PGK': 'K',
+    'PHP': '₱',
+    'PKR': '₨',
+    'PLN': 'zł',
+    'PYG': 'Gs',
+    'QAR': '﷼',
+    'RMB': '￥',
+    'RON': 'lei',
+    'RSD': 'Дин.',
+    'RUB': '₽',
+    'RWF': 'R₣',
+    'SAR': '﷼',
+    'SBD': '$',
+    'SCR': '₨',
+    'SDG': 'ج.س.',
+    'SEK': 'kr',
+    'SGD': '$',
+    'SHP': '£',
+    'SLL': 'Le',
+    'SOS': 'S',
+    'SRD': '$',
+    'SSP': '£',
+    'STD': 'Db',
+    'SVC': '$',
+    'SYP': '£',
+    'SZL': 'E',
+    'THB': '฿',
+    'TJS': 'SM',
+    'TMT': 'T',
+    'TND': 'د.ت',
+    'TOP': 'T$',
+    'TRL': '₤',
+    'TRY': '₺',
+    'TTD': 'TT$',
+    'TVD': '$',
+    'TWD': 'NT$',
+    'TZS': 'TSh',
+    'UAH': '₴',
+    'UGX': 'USh',
+    'USD': '$',
+    'UYU': '$U',
+    'UZS': 'лв',
+    'VEF': 'Bs',
+    'VND': '₫',
+    'VUV': 'VT',
+    'WST': 'WS$',
+    'XAF': 'FCFA',
+    'XBT': 'Ƀ',
+    'XCD': '$',
+    'XOF': 'CFA',
+    'XPF': '₣',
+    'YER': '﷼',
+    'ZAR': 'R',
+    'ZWD': 'Z$'
+}
+
 let items: Map<string, vscode.StatusBarItem>
 export function activate(context: vscode.ExtensionContext) {
     items = new Map<string, vscode.StatusBarItem>();
@@ -16,24 +185,30 @@ export function deactivate() {
 
 function refresh(): void {
     const config = vscode.workspace.getConfiguration()
-    const configuredSymbols = config.get('vscode-stocks.stockSymbols', [])
+    const configuredSymbols = config.get('vscrypto.cryptoSymbols', ['BTC', 'ETH'])
         .map(symbol => symbol.toUpperCase())
-
+    //pick only the top currency    
+    const stringCurrency = config.get('vscrypto.cryptoCurrency', 'USD')
+    const configExchange = config.get('vscrypto.cryptoExchange', 'CCCAGG')
+    const symbolCurrency = currencyMap[stringCurrency]
+    if (!symbolCurrency) {
+        console.log('Currency not found')
+    }
     if (!arrayEq(configuredSymbols, Array.from(items.keys()))) {
         cleanup()
-        fillEmpty(configuredSymbols)
+        fillEmpty(configuredSymbols, stringCurrency, symbolCurrency)
     }
 
-    refreshSymbols(configuredSymbols)
+    refreshSymbols(configuredSymbols, stringCurrency, symbolCurrency, configExchange)
 }
 
-function fillEmpty(symbols: string[]): void {
+function fillEmpty(symbols: string[], stringCurrency: string, symbolCurrency: string): void {
     symbols
         .forEach((symbol, i) => {
             // Enforce ordering with priority
             const priority = symbols.length - i
             const item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, priority)
-            item.text = `${symbol}: $…`
+            item.text = `${symbol}: ${symbolCurrency}…`
             item.show()
             items.set(symbol, item)
         })
@@ -48,28 +223,27 @@ function cleanup(): void {
     items = new Map<string, vscode.StatusBarItem>()
 }
 
-function refreshSymbols(symbols: string[]): void {
-    const url = `https://www.google.com/finance/info?q=${symbols.join(',')}`
-    httpGet(url).then(response => {
-        // Remove prepended newline+comment
-        response = response.substr(3)
-        const responseObj = JSON.parse(response)
-        if (!Array.isArray(responseObj)) {
-            throw new Error('Invalid response: ' + response)
-        }
+function refreshSymbols(symbols: string[], stringCurrency: string, symbolCurrency: string, configExchange: string): void {
+    symbols.forEach(function (element) {
+        const url = `https://min-api.cryptocompare.com/data/price?fsym=${element}&tsyms=${stringCurrency}&e=${configExchange}`
 
-        responseObj.forEach(updateItemWithSymbolResult)
-    }).catch(e => console.error(e))
+        httpGet(url).then(response => {
+            // Remove prepended newline+comment
+            //response = response.substr(3)
+            const responseObj = JSON.parse(response)
+            responseObj[stringCurrency]
+            updateItemWithSymbolResult(element, responseObj, stringCurrency, symbolCurrency)
+        }).catch(e => console.error(e))
+    })
 }
 
-function updateItemWithSymbolResult(symbolResult) {
-    const symbol = symbolResult.t.toUpperCase()
+function updateItemWithSymbolResult(element, symbolResult, stringCurrency, symbolCurrency) {
+    const symbol = element
     const item = items.get(symbol)
-    const price: number = symbolResult.l_cur
+    const price: number = symbolResult[stringCurrency]
 
-    item.text = `${symbol.toUpperCase()} $${price}`
-    const config = vscode.workspace.getConfiguration()
-    const useColors = config.get('vscode-stocks.useColors', false)
+    item.text = `${symbol.toUpperCase()} ${symbolCurrency}${price}`
+    const useColors = config.get('vscrypto.useColors', false)
     if (useColors) {
         const change = parseFloat(symbolResult.c)
         const color = change > 0 ? 'lightgreen' :

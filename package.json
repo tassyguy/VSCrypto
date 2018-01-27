@@ -1,15 +1,15 @@
 {
-    "name": "vscode-stocks",
-    "displayName": "Stocks",
-    "description": "Watch stock prices from the VS Code status bar",
-    "version": "0.0.3",
-    "publisher": "roblourens",
+    "name": "vscrypto",
+    "displayName": "VS Crypto",
+    "description": "Live ticker for cryptocurrencies like Bitcoin without ever leaving Visual Studio Code",
+    "version": "0.0.1",
+    "publisher": "simonxphillips",
     "repository": {
         "type": "git",
-        "url": "https://github.com/roblourens/vscode-stocks"
+        "url": "https://github.com/tassyguy/VSCrypto"
     },
     "bugs": {
-        "url": "https://github.com/roblourens/vscode-stocks/issues"
+        "url": "https://github.com/tassyguy/VSCrypto/issues"
     },
     "engines": {
         "vscode": "^1.5.0"
@@ -25,15 +25,25 @@
     "contributes": {
         "configuration": {
             "properties": {
-                "vscode-stocks.stockSymbols": {
+                "vscrypto.cryptoSymbols": {
                     "type": "array",
-                    "default": [],
-                    "description": "The list of stock symbols to display in the status bar"
+                    "default": [
+                        "BTC",
+                        "ETH",
+                        "LTC",
+                        "AUD"
+                    ],
+                    "description": "The list of cryptocurrencies to show"
                 },
-                "vscode-stocks.useColors": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "If true, highlights items red when they're down and green when they're up."
+                "vscrypto.cryptoCurrency": {
+                    "type": "string",
+                    "default": "USD",
+                    "description": "The default currency to use for crypto coin prices"
+                },
+                "vscrypto.cryptoExchange": {
+                    "type": "string",
+                    "default": "Coinbase",
+                    "description": "The exchange to use for crypto coin prices. Current options BTC38, BTCC, BTCE, BTER, Bit2C, Bitfinex, Bitstamp, Bittrex, CCEDK, Cexio, Coinbase, Coinfloor, Coinse, Coinsetter, Cryptopia, Cryptsy, Gatecoin, Gemini, HitBTC, Huobi, itBit, Kraken, LakeBTC, LocalBitcoins, MonetaGo, OKCoin, Poloniex, Yacuna, Yunbi, Yobit, Korbit, BitBay, BTCMarkets, QuadrigaCX, CoinCheck, BitSquare, Vaultoro, MercadoBitcoin, Unocoin, Bitso, BTCXIndia, Paymium, TheRockTrading, bitFlyer, Quoine, Luno, EtherDelta, Liqui, bitFlyerFX, BitMarket, LiveCoin, Coinone, Tidex, Bleutrade, EthexIndia "
                 }
             }
         }
